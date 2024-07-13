@@ -1,0 +1,26 @@
+import numpy as np
+import pandas as pd
+x=[[90, 90, 60, 60, 30], [60, 90, 60, 60, 30], [90, 30, 60, 90, 30]]
+#n=int(input("Enter number of x variables:"))
+#for i in range(n):
+#    x.append(list(map(int,input("Enter ").split())))
+#print(x)
+m=[]
+z=len(x[0])
+for i in x:
+    m.append(sum(i)/len(i))
+for i in range(len(m)):
+    m[i]=[m[i]]*z
+m=np.array(m)
+x=np.array(x)
+x_m=x-m
+c=np.matmul(x_m,list(zip(*x_m)))/z
+print(c)
+ev,evec=np.linalg.eig(c)
+ev=sorted(ev,reverse=True)
+print(ev)
+print("PCA TABLE:")
+d=[['z1',ev[0],ev[0]*100/sum(ev)],['z2',ev[1],(ev[0]+ev[1])*100/sum(ev)],['z3',ev[0],100]]
+df=pd.DataFrame(d , columns=['Principal Component', 'var Exp','Cummulative prop of tot var'])
+print(df)
+print(evec)

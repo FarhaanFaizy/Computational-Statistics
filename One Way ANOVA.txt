@@ -1,0 +1,42 @@
+import numpy as np
+from scipy import stats as s
+y=int(input("Enter the number of treatments:"))
+trt=[]
+for i in range(y):
+    a=np.array(list(map(int,input("Enter treatment :").split())))
+    trt.append(a)
+alpha=float(input("Enter level of significance:"))
+g=0
+z=0
+n=0
+ts=0
+for i in trt:
+    ts+=sum(i*i)
+    n+=len(i)
+    g+=sum(i)
+    z+=((sum(i)**2)/len(i))
+cf=(g**2)/n
+t=z-cf
+tss=ts-cf
+e=tss-t
+print("𝐓𝐇𝐄 𝐀𝐍𝐒𝐖𝐄𝐑 𝐈𝐒 𝐀𝐒 𝐅𝐎𝐋𝐋𝐎𝐖𝐒:")
+print("Hₒ:The effects of all samples are equal")
+print("Hₒ:µ₁=µ₂=.....=µₙ")
+print("H₁:The effects of all samples are not equal")
+print("H₁:µ₁≠µ₂≠.....≠µₙ")
+print("Level of significance,α=",alpha)
+print("𝑨𝑵𝑶𝑽𝑨 𝑻𝑨𝑩𝑳𝑬:")
+print("_______________________________________________________________________")
+print("SOURCE OF VALIDATION || DEGREES OF FREEDOM || SUM OF SQUARES || MEANS ")
+print("TREATMENTS           || ",y-1,"                || ",t,"         || ",round(t/(y-1),2))
+print("ERROR                || ",n-y,"               || ",e,"         || ",round(e/(n-y),2))
+print("_______________________________________________________________________")
+fcal=(t*(n-y))/(e*(y-1))
+print("F calculated =",fcal)
+ftab=s.f.ppf(1-alpha, y-1, n-y)
+print("F table=",round(ftab,3))
+print("𝑰𝑵𝑭𝑬𝑹𝑬𝑵𝑪𝑬:")
+if fcal>ftab:
+    print("We reject Hₒ i.e.,The effect of all samples is not equal")
+else:
+    print("We accept Hₒ i.e.,The effect of all samples is equal")

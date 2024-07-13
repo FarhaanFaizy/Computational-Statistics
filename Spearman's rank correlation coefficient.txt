@@ -1,0 +1,41 @@
+import numpy as np
+d=dict()
+def rank(x):
+    x=list(x)
+    a=set(x)
+    for i in a:
+        d[i]=x.count(i)
+    val=[]
+    for i in sorted(d.keys(),reverse=True):
+        val.append(d[i])
+    z=sorted(x,reverse=True)
+    rx=[]
+    for i in x:
+        if d[i]==1:
+            rx.append(z.index(i)+1)
+        else:
+            e=d[i]
+            s=0
+            for j in range(z.index(i)+1,z.index(i)+e+1):
+                s+=j/e
+            rx.append(s)
+    return rx
+def cf(x):
+    c=0
+    v=list(d.values())
+    for i in sorted(v,reverse=True):
+        if i!=1:
+            c+=(i*(i*i-1))/12
+    d.clear()
+    return c
+x=np.array(list(map(int,input("Enter x:").split())))
+y=np.array(list(map(int,input("Enter y:").split())))
+n=len(x)
+rx=np.array(rank(x))
+cf1=cf(x)
+ry=np.array(rank(y))
+cf1+=cf(y)
+da=rx-ry
+print("	Σdᵢ²=",sum(da*da))
+rho=1-((6*(sum(da*da)+cf1))/(n*(n*n-1)))
+print("ρ=",rho)

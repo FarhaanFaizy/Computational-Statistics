@@ -1,0 +1,54 @@
+import numpy as np
+def readx(a):
+    print("In x",a,sep='')
+    n=int(input("Enter number of args:"))
+    x=[0]*n
+    for i in range(n):
+        x[i]=list(map(int,input("Enter").split()))
+    return x
+def mean(x):
+    m=[]
+    for i in x:
+        m.append(sum(i)/len(i))
+    return m
+def trans(x):
+    try:
+        return list(zip(*x))
+    except:
+        l=[]
+        for i in x:
+            m=[]
+            m.append(i)
+            l.append(m)
+        return l
+x1=np.array(trans(readx(1)))
+x2=np.array(trans(readx(2)))
+m1=mean(x1)
+m2=mean(x2)
+z=len(x1[0])+len(x2[0])
+x=[[0]*z,[0]*z]
+for i in range(len(x)):
+    for j in range(len(x[0])):
+        if j<len(x1[0]):
+            x[i][j]=x1[i][j]
+        else:
+            x[i][j]=x2[i][j-len(x1[0])]
+m=mean(x)
+m=[[m[0]]*z,[m[1]]*z]
+x_mt=np.array(x)-np.array(m)
+x_m=trans(x_mt)
+c=np.matmul(x_mt,x_m)/z
+cinv=np.linalg.inv(c)
+xkt=[]
+print("Enter unclassified observation:")
+xkt.append([float(input("xk1="))])
+xkt.append([float(input("xk2="))])
+xkt=np.array(xkt)
+d=np.matmul(m1,cinv)
+f1=np.matmul(d,xkt)-0.5*np.matmul(d,trans(m1))+np.log(len(x1[0])/z)
+d=np.matmul(m2,cinv)
+f2=np.matmul(d,xkt)-0.5*np.matmul(d,trans(m2))+np.log(len(x2[0])/z)
+if f1>f2:
+    print("The observation belongs to f1")
+else:
+    print("The observation belongs to f2")  

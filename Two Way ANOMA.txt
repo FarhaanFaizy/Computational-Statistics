@@ -1,0 +1,73 @@
+import numpy as np
+from scipy import stats as s
+y,m=map(int,input("Enter the number of treatments and blocks:").split())
+trt=[]
+for i in range(y):
+    a=np.array(list(map(int,input("Enter treatment :").split())))
+    trt.append(a)
+alpha=float(input("Enter level of significance:"))
+g=z=t=b=ts=0
+if m>y:
+    big=m
+else:
+    big=y
+for i in range(big):
+    z1=0
+    z2=0
+    for j in range(big):
+        try:
+            z1+=trt[i][j]
+        except:
+            z1+=0     
+        try:
+            z2+=trt[j][i]
+        except:
+            z2+=0
+        try:
+            ts+=trt[i][j]**2
+        except:
+            ts+=0
+    g+=z1
+    t+=z1**2/m
+    b+=z2**2/y
+cf=(g**2)/(y*m)
+t=t-cf
+b=b-cf
+tss=ts-cf
+e=tss-t-b
+print("𝐓𝐇𝐄 𝐀𝐍𝐒𝐖𝐄𝐑 𝐈𝐒 𝐀𝐒 𝐅𝐎𝐋𝐋𝐎𝐖𝐒:")
+print("Hₒ₁:The effects of all treatments are equal")
+print("Hₒ₁:t₁=t₂=.....=tₙ")
+print("Hₒ₂:The effects of all blocks are equal")
+print("Hₒ₂:b₁=b₂=.....=bₙ")
+print("H₁₁:The effects of all treatments are not equal")
+print("H₁₁:t₁≠t₂≠.....≠tₙ")
+print("H₁₂:The effects of all blocks are not equal")
+print("H₁₂:b₁≠b₂≠.....≠bₙ")
+print("Level of significance,α=",alpha)
+print("𝑨𝑵𝑶𝑽𝑨 𝑻𝑨𝑩𝑳𝑬:")
+print("_______________________________________________________________________")
+print("SOURCE OF VALIDATION || DEGREES OF FREEDOM || SUM OF SQUARES || MEANS ")
+print("TREATMENTS           || ",y-1,"                || ",t,"         || ",round(t/(y-1),2))
+print("BLOCKS               || ",m-1,"                || ",b,"         || ",round(b/(m-1),2))
+print("ERROR                || ",(y-1)*(m-1),"               || ",e,"         || ",round(e/((y-1)*(m-1)),2))
+print("_______________________________________________________________________")
+fcal1=(t*((y-1)*(m-1)))/(e*(y-1))
+fcal2=(b*((y-1)*(m-1)))/(e*(m-1))
+print("F calculated for treatment =",fcal1)
+print("F calculated for block     =",fcal2)
+ftab1=s.f.ppf(1-alpha, y-1, (y-1)*(m-1))
+ftab2=s.f.ppf(1-alpha, m-1, (y-1)*(m-1))
+print("F table for treatment=",round(ftab1,3))
+print("F table for block=",round(ftab2,3))
+print("𝑰𝑵𝑭𝑬𝑹𝑬𝑵𝑪𝑬:")
+print("For treatments:")
+if fcal1>ftab1:
+    print("We reject H₀₁ i.e.,The effect of all treatments is not equal")
+else:
+    print("We accept H₀₁ i.e.,The effect of all treatments is equal")
+print("For blocks:")
+if fcal2>ftab2:
+    print("We reject Hₒ₂ i.e.,The effect of all blocks is not equal")
+else:
+    print("We accept Hₒ₂ i.e.,The effect of all blocks is equal")

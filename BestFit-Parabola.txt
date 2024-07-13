@@ -1,0 +1,46 @@
+import numpy as np
+from matplotlib import pyplot as plt
+def det(a):
+    x=a[0]
+    y=a[1]
+    z=a[2]
+    in1=x[0]*((y[1]*z[2])-(y[2]*z[1]))
+    in2=x[1]*((y[0]*z[2])-(y[2]*z[0]))
+    in3=x[2]*((y[0]*z[1])-(y[1]*z[0]))
+    return in1-in2+in3
+x=np.array(list(map(float,input("Enter x:").split())))
+y=np.array(list(map(float,input("Enter y:").split())))
+p=len(x)
+q=sum(x)
+r=sum(x*x)
+s=sum(x*x*x)
+t=sum(x*x*x*x)
+u=sum(y)
+v=sum(x*y)
+w=sum(x*x*y)
+ybar=u/p
+delt=det([[p,q,r],[q,r,s],[r,s,t]])
+det1=det([[u,q,r],[v,r,s],[w,s,t]])
+det2=det([[p,u,r],[q,v,s],[r,w,t]])
+det3=det([[p,q,u],[q,r,v],[r,s,w]])
+a=det1/delt
+b=det2/delt
+c=det3/delt
+y1=a+b*x+c*x**2
+print("Y=",round(a,4),"+",round(b,4),"X+",round(c,4),"X²")
+plt.title("second degree parabola") 
+plt.xlabel("x") 
+plt.ylabel("y") 
+plt.scatter(x,y1) 
+plt.show()
+sse=0
+sst=0
+for i in range(len(y)):
+    sse+=(y[i]-y1[i])**2
+    sst+=(y[i]-ybar)**2
+r2=(1-sse/sst)*100
+print("r2=",r2,"%")
+if r2>=90 :
+    print("It is best fit")
+else:
+    print("It is not best fit")

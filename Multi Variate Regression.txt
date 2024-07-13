@@ -1,0 +1,157 @@
+import copy
+import numpy as np
+from scipy import stats as s
+def matmul(a,b):
+    y=[]
+    if len(b)!=len(a[0]):
+        print("Cannot multipy")
+        return
+    else:
+        for i in range(len(a)):
+            z=[]
+            for j in range(len(b[0])):
+                d=0
+                for k in range(len(a[0])) :
+                    d+=a[i][k]*b[k][j]
+                z.append(d)
+            y.append(z)
+        return y 
+
+def makemat(x,r,c):
+    d=copy.deepcopy(x)
+    d.pop(r)
+    for i in range(len(d)):
+        for j in range(len(d[i])):
+            if (j==c):
+                d[i].pop(j)
+    return d
+
+def transpose(x):
+    try:
+        return list(zip(*x))
+    except:
+        l=[]
+        for i in x:
+            m=[]
+            m.append(i)
+            l.append(m)
+        return l
+
+def adj(x):
+    return transpose(cofactor(x))
+
+def det(x):
+    if len(x[0])==1:
+        return x[0][0]
+    elif len(x)>1:
+        dets=0
+        for i in range(len(x[0])):
+            dets+=(x[0][i]*miner(x,0,i))
+        return dets
+    
+def miner(x,r,c):
+    if len(x)!=1:
+        x=makemat(x,r,c)
+    return det(x)*((-1)**(r+c))
+
+def inv(x):
+    adjmat=np.array(adj(x))
+    d=det(x)
+    return adjmat/d
+
+def cofactor(x):
+    cofacmat=[]
+    for i in range(len(x)):
+        minrow=[]
+        for j in range(len(x[i])):
+            minrow.append(miner(x,i,j))
+        cofacmat.append(minrow)
+    return cofacmat
+
+def verify(y,y1,ybar):
+    sse=0
+    sst=0
+    for i in range(len(y)):
+        sse+=(y[i]-y1[i])**2
+        sst+=(y[i]-ybar)**2
+    r2=(1-sse/sst)*100
+    print("𝐂𝐎𝐄𝐅𝐅𝐈𝐂𝐈𝐄𝐍𝐓 𝐎𝐅 𝐃𝐄𝐓𝐄𝐑𝐌𝐈𝐍𝐀𝐓𝐈𝐎𝐍-𝐑²:")
+    print("r²=",r2,"%")
+    if r2>=90 :
+        print("It is best fit")
+    else:
+        print("It is not best fit")
+    p=len(res)
+    n=len(y)
+    ssr=sst-sse
+    print("𝑨𝑵𝑶𝑽𝑨 𝑻𝑨𝑩𝑳𝑬:")
+    print("_______________________________________________________________________")
+    print("SOURCE OF VALIDATION || DEGREES OF FREEDOM || SUM OF SQUARES || MEANS ")
+    print("REGRESSON            || ",p-1,"                || ",round(ssr,2),"         || ",round(ssr/(p-1),2))
+    print("ERROR                || ",n-p,"               || ",round(sse,2),"         || ",round(sse/(n-p),2))
+    print("_______________________________________________________________________")
+    fcal=(ssr*(n-p))/(sse*(p-1))
+    print("F calculated =",fcal)
+    ftab=s.f.ppf(1-.05, p-1, n-p)
+    print("F table=",round(ftab,3))
+    if fcal>ftab:
+        print("Not contributing to model")
+    else:
+        print("Contributing to model")
+    print("𝐓𝐄𝐒𝐓 𝐎𝐅 𝐈𝐍𝐃𝐈𝐕𝐈𝐃𝐔𝐀𝐋 𝐏𝐀𝐑𝐀𝐌𝐄𝐓𝐄𝐑:")
+    mse2=sse/(n-p)
+    t=[]
+    ttab=abs(s.t.ppf(.025,n-p))
+    for i in range(len(res)):
+        num=res[i][0]
+        den=(mse2*a[i][i])**0.5
+        t.append(abs(num/den))
+    print(t)
+    for i in range(len(t)):
+        if i==len(t)-1:
+            if t[i]<ttab:
+                print("β",i+1," does not contribute to model")
+            else:
+                print("β",i+1," contributes to model")
+        else:
+            if t[i]>ttab:
+                print("β",i+1," contributes to model")
+            else:
+                print("β",i+1," does not contribute to model")
+n=int(input("Enter number of x variables:"))
+x=[]
+for i in range(n):
+    l=[]
+    print("variable x",i+1)
+    l=list(map(float,input("Enter ").split()))
+    x.append(l)
+l=[]
+for i in x[0]:
+    l.append(1)
+x.insert(0,l)
+xcpy=copy.deepcopy(x)
+x=transpose(x)
+n=int(input("Enter number of y variables:"))
+y=[]
+for i in range(n):
+    l=[]
+    print("variable y",i+1)
+    l=list(map(float,input("Enter ").split()))
+    y.append(l)
+ycpy=copy.deepcopy(y)
+a=inv(matmul(transpose(x),x))
+yb=[]
+for i in range(len(y)):
+    yb.append(sum(y[i])/len(y[i]))
+b=matmul(transpose(x),transpose(y))
+res=list(matmul(a,b))
+for i in range(len(res)):
+    for j in range(len(res[0])):
+        res[i][j]=round(res[i][j],3)
+print("𝛽 = ",res)
+eqn=transpose(res)
+op=matmul(eqn,xcpy)
+for i in range(len(op)):
+    ybar=yb[i]
+    print("𝐅𝐎𝐑 𝐄𝐐𝐔𝐀𝐓𝐈𝐎𝐍 𝐍𝐔𝐌𝐁𝐄𝐑",i+1)
+    verify(y[i],op[i],ybar)

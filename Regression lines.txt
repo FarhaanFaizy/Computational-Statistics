@@ -1,0 +1,40 @@
+import numpy as np
+import math as m
+from matplotlib import pyplot as plt
+def cov(x,y):
+    n=len(x)
+    xbar=sum(x)/n
+    ybar=sum(y)/n
+    s=0
+    for i in range(n):
+        s+=(x[i]-xbar)*(y[i]-ybar)
+    covar=s/n
+    return covar
+def myvar(a):
+    xbar=sum(a)/len(a)
+    s=0
+    for i in a:
+        s+=(i-xbar)**2
+    var=s/len(a)
+    return (var)
+x=np.array(list(map(float,input("Enter x:").split())))
+y=np.array(list(map(float,input("Enter y:").split())))
+n=len(x)
+bxy=cov(x,y)/myvar(y)
+byx=cov(x,y)/myvar(x)
+xbar=sum(x)/n
+ybar=sum(y)/n
+a=xbar-(bxy*ybar)
+print("Regression line x on y")
+print("X=",round(a,4),"+",round(bxy,4),"Y")
+x1=a+bxy*y
+a=ybar-(byx*xbar)
+print("Regression line y on x")
+print("Y=",round(a,4),"+",round(byx,4),"X")
+y1=a+byx*x
+plt.title("Regression lines")
+plt.xlabel("x") 
+plt.ylabel("y")
+plt.plot(x,y1)
+plt.plot(y,x1)
+plt.show()

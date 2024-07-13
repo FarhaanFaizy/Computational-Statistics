@@ -1,0 +1,22 @@
+import numpy as np
+import math as m
+def cov(x,y):
+    n=len(x)
+    xbar=sum(x)/n
+    ybar=sum(y)/n
+    s=0
+    for i in range(n):
+        s+=(x[i]-xbar)*(y[i]-ybar)
+    covar=s/n
+    return covar
+def sd(a):
+    xbar=sum(a)/len(a)
+    s=0
+    for i in a:
+        s+=(i-xbar)**2
+    var=s/len(a)
+    return m.sqrt(var)
+x=np.array(list(map(float,input("Enter x:").split())))
+y=np.array(list(map(float,input("Enter y:").split())))
+r=cov(x,y)/(sd(x)*sd(y))
+print("rₓᵧ=",round(r,4))

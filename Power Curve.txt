@@ -1,0 +1,12 @@
+import numpy as np
+x=np.array(list(map(float,input("Enter x:").split())))
+y=np.array(list(map(float,input("Enter y:").split())))
+X=sum(np.log10(x))
+Z=sum(np.log10(x)*np.log10(y))
+V=sum(np.log10(x)*np.log10(x))
+Y=sum(np.log10(y))
+n=len(x)
+ybar=Y/n
+a=10**((V*Y-Z*X)/(V*n-X*X))
+b=(X*Y-n*Z)/(X*X-V*n)
+print("Y=",round(a,4),"*",round(b,4),"ˣ")

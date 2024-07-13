@@ -1,0 +1,79 @@
+import numpy as np
+import math
+def matmul(a,b):
+    y=[]
+    if len(b)!=len(a[0]):
+        print("Cannot multipy")
+        return
+    else:
+        for i in range(len(a)):
+            z=[]
+            for j in range(len(b[0])):
+                d=0
+                for k in range(len(a[0])) :
+                    d+=a[i][k]*b[k][j]
+                z.append(d)
+            y.append(z)
+        return y 
+
+def transpose(x):
+    try:
+        return list(zip(*x))
+    except:
+        l=[]
+        for i in x:
+            m=[]
+            m.append(i)
+            l.append(m)
+        return l
+
+def makemeanmat(t,p):
+    x=[]
+    for i in range(t):
+        c=[0]*p
+        x.append(c)
+    return x
+
+def makemeans(x,l,t,h):
+    for i in range(t):
+        s=0
+        for j in range(len(l[i])):
+            s+=l[i][j][h]
+        s=s/len(l[i])
+        x[i][h]=s
+    return x
+
+def overallmean(x,l,p):
+    le=[]
+    for i in range(len(l)):
+        le.append(len(l[i]))
+    n=sum(le)
+    y=transpose(x)
+    r=np.array(matmul(y,transpose(le)))
+    r=r/n
+    return r
+
+p=int(input("Enter number of variables :"))
+t=int(input("Enter number of treatments :"))
+l=[]
+for i in range(t):
+    l1=[]
+    print("Enter treatment ",t,":")
+    print("Enter all ",p,"Variables at once:")
+    t1=int(input("Enter number of arguments for this treatment :"))
+    for j in range(t1):
+        temp=np.array(list(map(int,input("Enter :").split())))
+        l1.append(temp)
+    l.append(l1)
+print(l)
+x=makemeanmat(t,p)
+for i in range(p):
+    x=makemeans(x,l,t,i)
+print(x)
+z=overallmean(x,l,p)
+print(z)
+sse=sst=ssr=[0]*(p+1)
+tot=0
+for i in range(len(l)):
+    for j in range(len(l[i])):
+        tot+=math.prod(l[i][j])
